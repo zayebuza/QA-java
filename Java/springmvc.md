@@ -767,7 +767,7 @@ https://mp.weixin.qq.com/s/oKOzvN49zOhl8cwliy3SEg
 
 如果是在分布式的集群环境中，在分布式系统中，实现不同线程对代码和资源的同步访问。怎么保证？如下
 
-![微信图片_20180619125800](C:\Users\miaodongbiao\Desktop\MD_image\微信图片_20180619125800.jpg)
+QA-java/md_image/微信图片_20180619125702.png
 
 
 
