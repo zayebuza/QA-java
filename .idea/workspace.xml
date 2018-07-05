@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="43b4132e-ffc2-46a3-babc-89e165cbae49" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/Java/springmvc.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/问题记录/问题记录.md" afterDir="false" />
-    </list>
+    <list default="true" id="43b4132e-ffc2-46a3-babc-89e165cbae49" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -28,7 +25,8 @@
         <entry file="file://$PROJECT_DIR$/Java/springmvc.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor>
+              <first_editor relative-caret-position="210">
+                <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
                 <folding>
                   <element signature="e#0#1460#0" expanded="true" />
                   <element signature="n#!!doc" expanded="true" />
@@ -42,6 +40,21 @@
               <second_editor />
             </state>
           </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Snipaste_2018-06-20_13-14-55.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/md_image/Snipaste_2018-06-20_13-14-55.png">
+          <provider selected="true" editor-type-id="images" />
+        </entry>
+      </file>
+      <file leaf-file-name="微信图片_20180619125702.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/md_image/微信图片_20180619125702.png">
+          <provider selected="true" editor-type-id="images" />
+        </entry>
+      </file>
+      <file leaf-file-name="微信图片_20180619125800.jpg" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/md_image/微信图片_20180619125800.jpg">
+          <provider selected="true" editor-type-id="images" />
         </entry>
       </file>
     </leaf>
@@ -81,6 +94,11 @@
               <item name="QA-java" type="462c0819:PsiDirectoryNode" />
               <item name="Java" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="QA-java" type="b2602c69:ProjectViewProjectNode" />
+              <item name="QA-java" type="462c0819:PsiDirectoryNode" />
+              <item name="问题记录" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -98,6 +116,13 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Code\QA-java\md_image" />
+      <recent name="D:\Code\QA-java\问题记录" />
+      <recent name="D:\Code\QA-java\Java" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -164,15 +189,16 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1530592028446</updated>
-      <workItem from="1530592031213" duration="228000" />
+      <workItem from="1530592031213" duration="725000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="228000" />
+    <option name="totallyTimeSpent" value="725000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1358" y="-413" width="1936" height="1096" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -185,10 +211,10 @@
       <window_info anchor="bottom" id="Database Changes" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" />
       <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Terminal" />
+      <window_info active="true" anchor="bottom" id="Terminal" visible="true" weight="0.30366492" />
       <window_info id="Capture Tool" />
       <window_info id="Designer" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17590618" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.17590618" />
       <window_info anchor="right" id="Database" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -219,10 +245,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/md_image/微信图片_20180619125800.jpg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/md_image/微信图片_20180619125702.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/md_image/Snipaste_2018-06-20_13-14-55.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/Java/springmvc.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor>
+          <first_editor relative-caret-position="210">
+            <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
             <folding>
               <element signature="e#0#1460#0" expanded="true" />
               <element signature="n#!!doc" expanded="true" />
