@@ -14,7 +14,7 @@
 
     HttpClient的实现类有：
 
-    ![https://github.com/zayebuza/QA-java/blob/master/md_image/httpClient.png]()
+    ![](https://github.com/zayebuza/QA-java/blob/master/md_image/httpClient.png)
 
  2. 创建请求方法的实例，并指定请求URL。如果需要发送GET请求，创建HttpGet对象；如果需要发送POST请求，创建HttpPost对象。
 
