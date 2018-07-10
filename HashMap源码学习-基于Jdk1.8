@@ -1,0 +1,447 @@
+# HashMap源码学习 - 基于jdk 1.8(拒绝稀里糊涂)
+
+1,HashMap底层数据结构
+
+=========
+
+    hashmap的数据结构 
+
+    HashMap在jdk1.6版本采用数组+链表的存储方式，但是到1.8版本时采用了数组+链表/红黑树的方式进行存储，有效的提高了查找时间，解决冲突,
+
+    放一张1.6的图 之后再找1.8的
+
+
+
+2成员变量
+
+=========
+
+    关于成员变量看网上有一篇文章写的不错，复制过来改改
+
+1.table
+
+    /**
+
+     * The table, initialized on first use, and resized as
+
+     * necessary. When allocated, length is always a power of two.
+
+     * (We also tolerate length zero in some operations to allow
+
+     * bootstrapping mechanics that are currently not needed.)
+
+     */
+
+    transient Node<K,V>[] table;
+
+存放KV数据的数组。第一次put的时候被初始化，根据需要可以重新resize。分配的长度总是2的幂。 
+
+table就是存储Node 的数组，就是hash表中的桶位
+
+2.entrySet
+
+    /**
+
+     * Holds cached entrySet(). Note that AbstractMap fields are used
+
+     * for keySet() and values().
+
+     */
+
+    transient Set<Map.Entry<K,V>> entrySet;
+
+当被调用entrySet时被赋值。通过keySet()方法可以得到map key的集合，通过values方法可以得到map value的集合。 
+
+3.size
+
+    /**
+
+     * The number of key-value mappings contained in this map.
+
+     */
+
+    transient int size;
+
+存放在map中的KV映射的总数。 
+
+//实际存储的数量，则HashMap的size()方法，实际返回的就是这个值，isEmpty()也是判断该值是否为0
+
+4.modCount
+
+    /**
+
+     * The number of times this HashMap has been structurally modified
+
+     * Structural modifications are those that change the number of mappings in
+
+     * the HashMap or otherwise modify its internal structure (e.g.,
+
+     * rehash).  This field is used to make iterators on Collection-views of
+
+     * the HashMap fail-fast.  (See ConcurrentModificationException).
+
+     */
+
+    transient int modCount;
+
+HashMap被结构性修改的次数。（结构性修改是指改变了KV映射数量的操作或者修改了HashMap的内部结构（如 rehash）。这个用于fail-fast。 
+
+//HashMap每改变一次结构，不管是添加还是删除都会modCount+1，主要用来当迭代时，保持数据的一致性（不知道这么理解正确么？）
+
+  //因为每一次迭代，都会检查modCount是否改变是否一致，不一致就会抛出异常。这也是为什么迭代过程中，除了运用迭代器的remove()方法外，不能自己进行改变数据
+
+  //fast-fail机制
+
+5.threshold
+
+    /**
+
+     * The next size value at which to resize (capacity * load factor).
+
+     *
+
+     * @serial
+
+     */
+
+    // (The javadoc description is true upon serialization.
+
+    // Additionally, if the table array has not been allocated, this
+
+    // field holds the initial array capacity, or zero signifying
+
+    // DEFAULT_INITIAL_CAPACITY.)
+
+    int threshold;
+
+当需要resize时的阈值。即当HashMap中KV映射的数量（即size）超过了threshold就会resize。
+
+扩容的门限值，当大于这个值时，table数组要进行扩容，一般等于（caploadFactor）threshold=capacityloadFactor。 
+
+6.loadFactor
+
+    /**
+
+     * The load factor for the hash table.
+
+     *
+
+     * @serial
+
+     */
+
+    final float loadFactor;
+
+装载因子。
+
+注意，在成员变量中并没有capacity这个数据。当然capacity可以通过threshold和loadFactor计算得来。    
+
+3,构造函数
+
+=============
+
+###HashMap()
+
+    HashMap共有四个构造,先看默认构造。当我们使用下面一段代码的时候走的是一个无参构造，会返回一个 size=0 的map，同时指定loadFactor为默认值，即 0.75
+
+         Map<String,Object> hashmap = new HashMap<>();
+
+>         
+
+>     /**
+
+     * Constructs an empty <tt>HashMap</tt> with the default initial capacity
+
+     * (16) and the default load factor (0.75).
+
+     */
+
+    public HashMap() {
+
+        this.loadFactor = DEFAULT_LOAD_FACTOR; // all other fields defaulted
+
+    }
+
+###HashMap(int initialCapacity)
+
+    这个构造函数是调用了第三个构造函数，着重看第三个构造函数
+
+>         
+
+>     /**
+
+     * Constructs an empty <tt>HashMap</tt> with the specified initial
+
+     * capacity and the default load factor (0.75).
+
+     *
+
+     * @param  initialCapacity the initial capacity.
+
+     * @throws IllegalArgumentException if the initial capacity is negative.
+
+     */
+
+    public HashMap(int initialCapacity) {
+
+        this(initialCapacity, DEFAULT_LOAD_FACTOR);
+
+    }
+
+###HashMap(int initialCapacity, float loadFactor)
+
+    构造函数是用用户给定的初始容量和装填因子，初始化threshold和负载因子两个变量
+
+>      /**
+
+     * Constructs an empty <tt>HashMap</tt> with the specified initial
+
+     * capacity and load factor.
+
+     *
+
+     * @param  initialCapacity the initial capacity
+
+     * @param  loadFactor      the load factor
+
+     * @throws IllegalArgumentException if the initial capacity is negative
+
+     *         or the load factor is nonpositive
+
+     */
+
+    public HashMap(int initialCapacity, float loadFactor) {
+
+        if (initialCapacity < 0)                               //如果给定的initialCapacity<0,报异常
+
+            throw new IllegalArgumentException("Illegal initial capacity: " +
+
+                                               initialCapacity);
+
+        if (initialCapacity > MAXIMUM_CAPACITY)               //如果给定的initialCapacity大于最大容量，
+
+            initialCapacity = MAXIMUM_CAPACITY;                 //将最大容量赋给initialCapacity
+
+        if (loadFactor <= 0 || Float.isNaN(loadFactor))      //如果给定的负载因子<0 或者负载因子怎样怎样，抛异常
+
+            throw new IllegalArgumentException("Illegal load factor: " +
+
+                                               loadFactor);
+
+        this.loadFactor = loadFactor;
+
+        this.threshold = tableSizeFor(initialCapacity);
+
+    }
+
+threshold在代码中的定义，
+
+>         /**
+
+     * The next size value at which to resize (capacity * load factor).    //解释成中文就是：先不解释了
+
+     *
+
+     * @serial
+
+     */
+
+    // (The javadoc description is true upon serialization.
+
+    // Additionally, if the table array has not been allocated, this
+
+    // field holds the initial array capacity, or zero signifying
+
+    // DEFAULT_INITIAL_CAPACITY.)
+
+    int threshold;
+
+tableSizeFor(initialCapacity)方法的代码如下,由此可以看到，当在实例化HashMap实例时，如果给定了initialCapacity，由于HashMap的capacity都是2的幂，因此这个方法用于找到大于等于initialCapacity的最小的2的幂（initialCapacity如果就是2的幂，则返回的还是这个数）。 方法具体解释看网上资源吧 [http://blog.csdn.net/fan2012huan/article/details/51097331](http://blog.csdn.net/fan2012huan/article/details/51097331
+
+>     
+
+>     /**
+
+     * Returns a power of two size for the given target capacity.
+
+     */
+
+    static final int tableSizeFor(int cap) {
+
+        int n = cap - 1;
+
+        n |= n >>> 1;
+
+        n |= n >>> 2;
+
+        n |= n >>> 4;
+
+        n |= n >>> 8;
+
+        n |= n >>> 16;
+
+        return (n < 0) ? 1 : (n >= MAXIMUM_CAPACITY) ? MAXIMUM_CAPACITY : n + 1;
+
+    }
+
+4，内部类
+
+=======
+
+3,put()
+
+========
+
+先看一下put()的源码
+
+>         /**
+
+     * Associates the specified value with the specified key in this map.
+
+     * If the map previously contained a mapping for the key, the old
+
+     * value is replaced.
+
+     *
+
+     * @param key key with which the specified value is to be associated
+
+     * @param value value to be associated with the specified key
+
+     * @return the previous value associated with <tt>key</tt>, or
+
+     *         <tt>null</tt> if there was no mapping for <tt>key</tt>.
+
+     *         (A <tt>null</tt> return can also indicate that the map
+
+     *         previously associated <tt>null</tt> with <tt>key</tt>.)
+
+     */
+
+    public V put(K key, V value) {                
+
+        return putVal(hash(key), key, value, false, true);    //获取key的hash值
+
+    }
+
+put()进行了封装，会调用    putVal(int hash, K key, V value, boolean onlyIfAbsent,
+
+                   boolean evict) 这个方法，着重看下这个方法
+
+>      /**
+
+     * Implements Map.put and related methods
+
+     *
+
+     * @param hash hash for key
+
+     * @param key the key
+
+     * @param value the value to put
+
+     * @param onlyIfAbsent if true, don't change existing value
+
+     * @param evict if false, the table is in creation mode.
+
+     * @return previous value, or null if none
+
+     */
+
+    final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
+
+                   boolean evict) {
+
+        Node<K,V>[] tab; Node<K,V> p; int n, i;
+
+         //如果当前对象为null或者它内部没有任何元素,那么resize()重置一下, 会在扩容的时候初始化 table
+
+        if ((tab = table) == null || (n = tab.length) == 0)        //当new HashMap实例时，并没有初始化其成员变量transient Node<K,V>[] table;，也就是说并没有为table分配内存。只有当put元素时才通过resize方法对table进行初始化。
+
+            n = (tab = resize()).length;
+
+        if ((p = tab[i = (n - 1) & hash]) == null)      //这里不太理解
+
+            tab[i] = newNode(hash, key, value, null);
+
+        else {
+
+            Node<K,V> e; K k;
+
+            //传入hash值在当前对象的数组中是否已经有元素,如果没有就直接new一个Node
+
+            if (p.hash == hash &&
+
+                ((k = p.key) == key || (key != null && key.equals(k))))  //判断节点是否存在，如果存在直接覆盖
+
+                e = p;
+
+            else if (p instanceof TreeNode)   //判断是否为红黑树，如果是则进行红黑树的插入
+
+                e = ((TreeNode<K,V>)p).putTreeVal(this, tab, hash, key, value);
+
+            else {     //节点为链表
+
+                for (int binCount = 0; ; ++binCount) {
+
+                    if ((e = p.next) == null) {
+
+                        p.next = newNode(hash, key, value, null);
+
+                        if (binCount >= TREEIFY_THRESHOLD - 1) // -1 for 1st    //判断链表数是否超过8，如果超过，则转换为红黑树
+
+                            treeifyBin(tab, hash);
+
+                        break;
+
+                    }
+
+                    if (e.hash == hash &&
+
+                        ((k = e.key) == key || (key != null && key.equals(k))))   //如果key存在则覆盖
+
+                        break;
+
+                    p = e;
+
+                }
+
+            }
+
+            if (e != null) { // existing mapping for key
+
+                V oldValue = e.value;
+
+                if (!onlyIfAbsent || oldValue == null)
+
+                    e.value = value;
+
+                afterNodeAccess(e);
+
+                return oldValue;
+
+            }
+
+        }
+
+        ++modCount;
+
+        if (++size > threshold)    //判断是否需要扩容
+
+            resize();
+
+        afterNodeInsertion(evict);
+
+        return null;
+
+    }
+
+再借个流程图说明：
+
+
+
+4.get()
+
+======
+
+哇，网上大牛太多了  随便看看就懂了啊
