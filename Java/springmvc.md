@@ -880,7 +880,7 @@ isNewTransaction()：判断当前事务是否是一个新事务
         <!-- 配置Token拦截器，防止用户重复提交数据 -->
         <mvc:interceptor>
             <mvc:mapping path="/**" /><!--这个地方时你要拦截得路径 我这个意思是拦截所有得URL-->
-            <bean class="com.ucredit.mars.common.interceptor.TokenInterceptor"/><!--class文件路径改成你自己写得拦截器路径！！ -->
+            <bean class="com.XXX.common.interceptor.TokenInterceptor"/><!--class文件路径改成你自己写得拦截器路径！！ -->
         </mvc:interceptor>
     </mvc:interceptors>
 ```
