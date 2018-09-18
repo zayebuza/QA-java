@@ -8,16 +8,19 @@
   ### SpringMVC
   ### SpringBoot
   ### junit
+    一直想要抽时间去看一下junit的源码，可是总感觉功力还打不到，设计模式看了忘，再等等
   ### testNG
 
 ## 测试
-
+  测试开发  白盒测试  
 
 ## redis
+  redis从入门到入门
 
 ## Docker
 
 ## Shell脚本
+  shell脚本学起来太散了
 
 ## Linux
 
